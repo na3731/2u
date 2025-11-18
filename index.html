@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공정 소비 지도 — 충남대 주변</title>
+    <style>
+        :root{
+            --main:#3EB7A0;
+            --bg:#F5F5F3;
+            --card:#FFFFFF;
+            --muted:#7a7a7a;
+            --accent:#2f8f7c;
+        }
+        *{box-sizing:border-box}
+        body{
+            margin:0;
+            font-family: "Noto Sans KR", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background:var(--bg);
+            color:#222;
+            -webkit-font-smoothing:antialiased;
+        }
+        .navbar{background:var(--main);padding:12px 16px;position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:12px}
+        .brand{color:white;font-weight:700;font-size:18px;margin-right:8px}
+        .nav-btn{background:white;border:none;padding:10px 14px;border-radius:24px;cursor:pointer;color:var(--main);font-weight:600}
+        .container{max-width:1100px;margin:22px auto;padding:0 16px}
+        /* 상단 핵심 배너 */
+        .hero{background:linear-gradient(90deg, rgba(62,183,160,0.12), transparent);padding:22px;border-radius:14px;display:flex;gap:18px;align-items:center}
+        .hero-left{flex:1}
+        .hero h1{margin:0;color:var(--main);font-size:20px}
+        .hero p{margin:8px 0 0 0;color:var(--muted)}
+        .hero-cta{display:flex;gap:8px;margin-top:12px}
+        .cta-btn{background:var(--main);color:white;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+        .small-cta{background:white;border:1px solid var(--main);color:var(--main);padding:8px 12px;border-radius:10px;cursor:pointer}
+
+        /* 카드 스타일 */
+        .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);margin-top:18px}
+        h2{color:var(--main);margin:0 0 8px 0}
+        p{margin:0;color:#333}
+
+        /* 참여 위젯 */
+        .participation{display:flex;gap:12px;align-items:center}
+        .counter{font-size:28px;font-weight:800;color:var(--main)}
+        .progress{height:12px;background:#eee;border-radius:12px;overflow:hidden;width:220px}
+        .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--main),var(--accent));width:0%}
+
+        /* 지도/리스트 레이아웃 */
+        .split{display:grid;grid-template-columns:1fr 420px;gap:18px;margin-top:16px}
+        .map{height:480px;border-radius:10px;border:2px solid var(--main);overflow:hidden;background:#fafafa;display:flex;align-items:center;justify-content:center}
+        .map img{max-width:100%;height:auto}
+        .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+        .chip{padding:8px 10px;border-radius:999px;border:1px solid #e6e6e6;background:white;cursor:pointer}
+        .chip.active{background:var(--main);color:white;border-color:var(--main)}
+
+        .list{max-height:480px;overflow:auto;padding-right:8px}
+        .shop{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:10px;border:1px solid #f0f0f0;margin-bottom:10px}
+        .badge{width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:6px}
+        .badge.good{background:#34c38f}
+        .badge.missing{background:#ff6b6b}
+        .shop-info{flex:1}
+        .shop-info h3{margin:0;font-size:16px}
+        .shop-info p{margin:6px 0 0 0;color:var(--muted);font-size:14px}
+        .shop-actions{display:flex;flex-direction:column;gap:6px}
+        .action-btn{padding:8px 10px;border-radius:8px;border:none;background:var(--main);color:white;cursor:pointer;font-size:13px}
+        .ghost{background:white;color:var(--main);border:1px solid var(--main)}
+
+        /* 검색 박스 */
+        .search-row{display:flex;gap:8px;align-items:center}
+        .search-row input{flex:1;padding:10px;border-radius:10px;border:1px solid #ddd}
+
+        /* 체크리스트 */
+        .checklist{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+        .check{background:#fff;padding:10px 12px;border-radius:10px;border:1px solid #eee}
+
+        /* 후기 섹션 */
+        .feedback{display:flex;gap:8px;align-items:center}
+        .small{font-size:13px;color:var(--muted)}
+
+        footer{margin:28px 0 80px 0;text-align:center;color:var(--muted);font-size:13px}
+
+        /* 반응형 */
+        @media(max-width:980px){
+            .split{grid-template-columns:1fr}
+            .map{height:320px}
+            .list{max-height:320px}
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="brand">공정 소비 지도</div>
+        <button class="nav-btn" onclick="scrollToSection('home')">홈</button>
+        <button class="nav-btn" onclick="scrollToSection('map')">지도</button>
+        <button class="nav-btn" onclick="scrollToSection('participate')">동참</button>
+        <div style="flex:1"></div>
+        <button class="nav-btn" onclick="shareSite()">공유</button>
+    </div>
+
+    <div class="container">
+        <!-- HERO -->
+        <section id="home" class="card hero">
+            <div class="hero-left">
+                <h1>충남대 주변 상권, <strong>투명한 선택</strong>으로 바꿔봅시다</h1>
+                <p>가격을 미리 알 수 없어서 불이익을 당한 경험, 한 번쯤 있으시죠? 우리 프로젝트는 <strong>누구나</strong> 가격을 알고 비교할 수 있는 상권을 만드는 것을 목표로 합니다.</p>
+
+                <div class="hero-cta">
+                    <button class="cta-btn" onclick="scrollToSection('map')">공정가격 지도 보기</button>
+                    <button class="small-cta" onclick="scrollToSection('participate')">동참하기 • 지금 0.5초 투자</button>
+                </div>
+
+                <div style="margin-top:12px">
+                    <div class="checklist">
+                        <div class="check">✔ 가격 공개 여부 한눈에</div>
+                        <div class="check">✔ 신뢰 가게 표시</div>
+                        <div class="check">✔ 학생 참여형 확산</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="width:240px;text-align:center">
+                <img src="illustration.png" alt="illustration" style="max-width:100%">
+                <div style="font-size:12px;color:var(--muted);margin-top:8px">한 번의 클릭이 상권을 바꿉니다</div>
+            </div>
+        </section>
+
+        <!-- MAP & LIST -->
+        <section id="map" class="card">
+            <h2>공정가격 지도</h2>
+            <p class="small">업종 필터, 지역 필터를 통해 원하는 가게를 빠르게 찾아보세요.</p>
+
+            <div style="margin-top:12px">
+                <div class="search-row">
+                    <input type="text" id="search" placeholder="가게 이름 또는 업종을 검색하세요 (예: 헬스장, 미용실)" oninput="renderList()">
+                    <button class="chip" onclick="resetFilters()">초기화</button>
+                </div>
+
+                <div class="filters" style="margin-top:10px">
+                    <div class="chip active" data-type="all" onclick="toggleChip(this)">전체</div>
+                    <div class="chip" data-type="헬스장" onclick="toggleChip(this)">헬스장</div>
+                    <div class="chip" data-type="미용실" onclick="toggleChip(this)">미용실</div>
+                    <div class="chip" data-type="스터디카페" onclick="toggleChip(this)">스터디카페</div>
+                    <div class="chip" data-type="정문" onclick="toggleChip(this)">정문권</div>
+                    <div class="chip" data-type="서문" onclick="toggleChip(this)">서문권</div>
+                    <div class="chip" data-type="쪽문" onclick="toggleChip(this)">쪽문권</div>
+                </div>
+
+                <div class="split">
+                    <div>
+                        <div class="map" id="mapBox">
+                            <!-- 실제 지도 대신 예시 이미지 또는 향후 지도 서비스 연동 -->
+                            <img src="map_total.png" alt="전체 지도" id="mapImage">
+                        </div>
+
+                        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                            <button class="chip" onclick="zoomRegion('정문')">정문권 보기</button>
+                            <button class="chip" onclick="zoomRegion('서문')">서문권 보기</button>
+                            <button class="chip" onclick="zoomRegion('쪽문')">쪽문권 보기</button>
+                            <button class="chip" onclick="showGoodShops()">가격 공개 잘 하는 가게 보기</button>
+                        </div>
+                    </div>
+
+                    <aside>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                            <div style="font-weight:700">가게 목록</div>
+                            <div class="small">총 <span id="totalShops">0</span>개</div>
+                        </div>
+
+                        <div class="list" id="shopList"></div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- 참여 섹션 -->
+        <section id="participate" class="card">
+            <h2>동참하기</h2>
+            <p class="small">복잡한 서명 대신, 클릭 몇 번으로 시작하세요. 작은 참여가 큰 변화를 만듭니다.</p>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap">
+                <div class="participation">
+                    <div>
+                        <div class="small">현재 동참자</div>
+                        <div class="counter" id="globalCount">0</div>
+                        <div style="font-size:13px;color:var(--muted)">목표: <strong id="goal">150</strong>명</div>
+                    </div>
+
+                    <div style="margin-left:12px">
+                        <div class="progress" aria-hidden><i id="progBar"></i></div>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:8px">
+                    <button class="cta-btn" onclick="participate()">동참하기</button>
+                    <button class="nav-btn ghost" onclick="openSurvey()">더 의견 남기기</button>
+                </div>
+            </div>
+
+            <div style="margin-top:18px" class="card">
+                <h3 style="margin:0 0 8px 0">이 페이지가 유용했나요?</h3>
+                <div class="feedback">
+                    <button class="chip" onclick="voteHelpful(true)">👍 유용해요</button>
+                    <button class="chip" onclick="voteHelpful(false)">👎 별로예요</button>
+                    <div class="small" style="margin-left:8px">(통계는 익명으로 저장됩니다)</div>
+                </div>
+                <div style="margin-top:10px;color:var(--muted);font-size:13px">이 피드백은 디자인 및 콘텐츠 개선에 활용됩니다.</div>
+            </div>
+
+            <div style="margin-top:12px" class="card">
+                <h3 style="margin:0 0 8px 0">공정 소비 체크리스트</h3>
+                <div class="checklist">
+                    <div class="check">가격표가 명확하게 게시되어 있다</div>
+                    <div class="check">환불/취소 규정이 표기되어 있다</div>
+                    <div class="check">업종별 표준 요금 예시가 제시되어 있다</div>
+                </div>
+                <p class="small" style="margin-top:8px">학생들이 매장을 비교할 때 참고할 수 있는 간단한 가이드입니다.</p>
+            </div>
+        </section>
+
+        <footer>
+            충남대학교 공정 소비 프로젝트 — 학생 기획팀
+        </footer>
+    </div>
+
+<script>
+    /* --- 데이터 모의 --- */
+    const shops = [
+        {id:1,name:'A헬스클럽',type:'헬스장',region:'정문',price:'1개월 25,000원',pricePublic:true},
+        {id:2,name:'B피트니스',type:'헬스장',region:'죽동',price:null,pricePublic:false},
+        {id:3,name:'C미용실',type:'미용실',region:'정문',price:'컷 18,000원',pricePublic:true},
+        {id:4,name:'D스터디카페',type:'스터디카페',region:'서문',price:'시간당 2,000원',pricePublic:true},
+        {id:5,name:'E헤어',type:'미용실',region:'쪽문',price:null,pricePublic:false},
+        {id:6,name:'F헬스',type:'헬스장',region:'서문',price:'1개월 30,000원',pricePublic:true}
+    ];
+
+    const GOAL = 150;
+
+    /* --- 초기화 --- */
+    document.addEventListener('DOMContentLoaded', ()=>{
+        // 참여 카운트 초기화
+        const count = Number(localStorage.getItem('global-participation-count') || 0);
+        updateGlobalCount(count);
+        renderList();
+        document.getElementById('goal').textContent = GOAL;
+    });
+
+    /* --- 유틸리티 --- */
+    function scrollToSection(id){
+        document.getElementById(id).scrollIntoView({behavior:'smooth'});
+    }
+
+    function shareSite(){
+        const url = location.href;
+        if(navigator.share){
+            navigator.share({title:'공정 소비 지도', text:'충남대 주변 공정 소비 지도를 확인해보세요', url});
+        } else {
+            copyToClipboard(url);
+            alert('링크가 복사되었습니다. 학교 커뮤니티에 붙여넣어 공유하세요.');
+        }
+    }
+
+    function copyToClipboard(text){
+        const ta = document.createElement('textarea');
+        ta.value = text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    }
+
+    /* --- 지도 관련 (간단한 로컬 시뮬레이션) --- */
+    let activeFilters = {types: new Set(['all'])};
+
+    function toggleChip(el){
+        const type = el.dataset.type;
+        // single-select for region vs multi-select for type; simple rules: 'all' resets
+        if(type === 'all'){
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            activeFilters.types = new Set(['all']);
+        } else {
+            document.querySelector('.chip[data-type="all"]').classList.remove('active');
+            el.classList.toggle('active');
+            // build types set
+            const active = Array.from(document.querySelectorAll('.chip.active')).map(c => c.dataset.type).filter(Boolean);
+            if(active.length===0){document.querySelector('.chip[data-type="all"]').classList.add('active'); activeFilters.types = new Set(['all']);}
+            else activeFilters.types = new Set(active);
+        }
+        renderList();
+    }
+
+    function resetFilters(){
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        document.querySelector('.chip[data-type="all"]').classList.add('active');
+        activeFilters.types = new Set(['all']);
+        document.getElementById('search').value='';
+        renderList();
+    }
+
+    function zoomRegion(region){
+        // placeholder: change map image if region-specific images exist
+        alert(region + ' 중심으로 확대(예시 기능)');
+    }
+
+    function showGoodShops(){
+        alert('가격을 공개한 가게만 필터링합니다.');
+        // set chips to show only pricePublic true
+        // For simplicity, mark only 'good' shops in list
+        renderList(true);
+    }
+
+    /* --- 리스트 렌더링 --- */
+    function renderList(onlyGood=false){
+        const q = document.getElementById('search').value.trim();
+        const listEl = document.getElementById('shopList');
+        listEl.innerHTML = '';
+        let filtered = shops.slice();
+
+        // text search
+        if(q){
+            filtered = filtered.filter(s => (s.name+" "+s.type+" "+(s.region||"")).toLowerCase().includes(q.toLowerCase()));
+        }
+
+        // filters
+        const types = activeFilters.types;
+        if(!types.has('all')){
+            filtered = filtered.filter(s => types.has(s.type) || types.has(s.region));
+        }
+
+        if(onlyGood) filtered = filtered.filter(s => s.pricePublic);
+
+        document.getElementById('totalShops').textContent = filtered.length;
+
+        filtered.forEach(s => {
+            const el = document.createElement('div'); el.className='shop';
+            const badge = document.createElement('div'); badge.className='badge '+(s.pricePublic? 'good':'missing');
+            el.appendChild(badge);
+
+            const info = document.createElement('div'); info.className='shop-info';
+            const h3 = document.createElement('h3'); h3.textContent = s.name + ' · ' + s.type;
+            const p = document.createElement('p');
+            if(s.pricePublic) p.innerHTML = (s.price? '<strong>'+s.price+'</strong> • '+s.region : '가격 정보 공개됨 • '+s.region);
+            else p.innerHTML = '<em>가격 미표시 • '+s.region+'</em>';
+            info.appendChild(h3); info.appendChild(p);
+            el.appendChild(info);
+
+            const actions = document.createElement('div'); actions.className='shop-actions';
+            const likeBtn = document.createElement('button'); likeBtn.className='action-btn ghost'; likeBtn.textContent='좋아요';
+            likeBtn.onclick = ()=>{toast('좋아요 감사합니다!');};
+            const detailBtn = document.createElement('button'); detailBtn.className='action-btn'; detailBtn.textContent='상세보기';
+            detailBtn.onclick = ()=>{openShopModal(s)};
+            actions.appendChild(likeBtn); actions.appendChild(detailBtn);
+            el.appendChild(actions);
+
+            listEl.appendChild(el);
+        });
+    }
+
+    function openShopModal(shop){
+        const msg = shop.name + '\n\n업종: ' + shop.type + '\n지역: ' + shop.region + '\n' + (shop.pricePublic? ('가격: '+shop.price) : '가격 정보 미표시');
+        const action = shop.pricePublic ? '이 가게는 가격을 공개하고 있어요. 방문 전에 비교하세요.' : '가격 미표시 가게입니다. 개선 요청을 위해 동참해주세요.';
+        if(confirm(msg + '\n\n' + action + '\n\n공유하시겠어요?')){
+            copyToClipboard(location.href + '#shop-' + shop.id);
+            alert('가게 링크(페이지 링크)가 복사되었습니다. 커뮤니티에 붙여넣어 공유하세요.');
+        }
+    }
+
+    function toast(msg){
+        const t = document.createElement('div');
+        t.textContent = msg; t.style.position='fixed'; t.style.right='20px'; t.style.bottom='20px'; t.style.background='rgba(0,0,0,0.8)'; t.style.color='white'; t.style.padding='10px 14px'; t.style.borderRadius='8px'; t.style.zIndex=9999;
+        document.body.appendChild(t); setTimeout(()=>t.remove(),1800);
+    }
+
+    /* --- 참여 기능 --- */
+    function updateGlobalCount(n){
+        document.getElementById('globalCount').textContent = n;
+        const pct = Math.min(100, Math.round((n/GOAL)*100));
+        document.getElementById('progBar').style.width = pct + '%';
+    }
+
+    function participate(){
+        const key = 'global-participation-count';
+        let count = Number(localStorage.getItem(key) || 0);
+        // prevent multiple increments per user session: use flag
+        if(localStorage.getItem('joined-'+location.pathname)){
+            alert('이미 동참하셨습니다. 공유로 더 많은 사람을 초대해주세요!'); return;
+        }
+        count += 1; localStorage.setItem(key, count); localStorage.setItem('joined-'+location.pathname, '1');
+        updateGlobalCount(count);
+        toast('동참 감사합니다!');
+    }
+
+    /* --- 설문/서명 링크 --- */
+    function openSurvey(){
+        window.open('https://forms.gle/XXXXXXX','_blank');
+    }
+
+    /* --- 페이지 유용성 투표 --- */
+    function voteHelpful(isGood){
+        const key = 'page-helpful-stats';
+        const stats = JSON.parse(localStorage.getItem(key) || JSON.stringify({good:0,bad:0}));
+        if(localStorage.getItem('voted-helpful')){alert('이미 투표하셨습니다. 소중한 의견 감사합니다.'); return;}
+        if(isGood) stats.good++; else stats.bad++;
+        localStorage.setItem(key, JSON.stringify(stats)); localStorage.setItem('voted-helpful','1');
+        alert('피드백이 기록되었습니다. 감사합니다!');
+    }
+
+    // 초깃값 로드
+    function init(){
+        const c = Number(localStorage.getItem('global-participation-count') || 0);
+        updateGlobalCount(c);
+        // render list initially
+        renderList();
+    }
+
+    init();
+</script>
+</body>
+</html>
