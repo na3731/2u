@@ -136,9 +136,6 @@
 
                 <div class="filters" style="margin-top:10px">
                     <div class="chip active" data-type="all" onclick="toggleChip(this)">전체</div>
-                    <div class="chip" data-type="헬스장" onclick="toggleChip(this)">헬스장</div>
-                    <div class="chip" data-type="미용실" onclick="toggleChip(this)">미용실</div>
-                    <div class="chip" data-type="스터디카페" onclick="toggleChip(this)">스터디카페</div>
                     <div class="chip" data-type="정문" onclick="toggleChip(this)">정문권</div>
                     <div class="chip" data-type="서문" onclick="toggleChip(this)">서문권</div>
                     <div class="chip" data-type="쪽문" onclick="toggleChip(this)">쪽문권</div>
@@ -198,8 +195,8 @@
             <div style="margin-top:18px" class="card">
                 <h3 style="margin:0 0 8px 0">이 페이지가 유용했나요?</h3>
                 <div class="feedback">
-                    <button class="chip" onclick="voteHelpful(true)">👍 유용해요</button>
-                    <button class="chip" onclick="voteHelpful(false)">👎 별로예요</button>
+                    <button class="chip" onclick="voteHelpful(true)"> 유용해요</button>
+                    <button class="chip" onclick="voteHelpful(false)"> 별로예요</button>
                     <div class="small" style="margin-left:8px">(통계는 익명으로 저장됩니다)</div>
                 </div>
                 <div style="margin-top:10px;color:var(--muted);font-size:13px">이 피드백은 디자인 및 콘텐츠 개선에 활용됩니다.</div>
@@ -223,14 +220,186 @@
 
 <script>
     /* --- 데이터 모의 --- */
-    const shops = [
-        {id:1,name:'A헬스클럽',type:'헬스장',region:'정문',price:'1개월 25,000원',pricePublic:true},
-        {id:2,name:'B피트니스',type:'헬스장',region:'죽동',price:null,pricePublic:false},
-        {id:3,name:'C미용실',type:'미용실',region:'정문',price:'컷 18,000원',pricePublic:true},
-        {id:4,name:'D스터디카페',type:'스터디카페',region:'서문',price:'시간당 2,000원',pricePublic:true},
-        {id:5,name:'E헤어',type:'미용실',region:'쪽문',price:null,pricePublic:false},
-        {id:6,name:'F헬스',type:'헬스장',region:'서문',price:'1개월 30,000원',pricePublic:true}
-    ];
+   const gyms = [
+    {
+        id: 1,
+        name: '숨 트레이닝 센터',
+        region: '정문',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 없음(X)
+기간권 (10명 한정)
+ - 1개월: 220,000
+ - 3개월: 500,000
+ - 6개월: 800,000
+PT 10회: 880,000
+충대제휴: 없음`
+    },
+    {
+        id: 2,
+        name: '투모어 휘트니스 봉명7호점',
+        region: '봉명',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 20,000
+기간권
+ - 1개월: 120,000
+ - 3개월: 220,000
+ - 6개월: 340,000
+PT 10회: 트레이너별 상이
+충대제휴:
+ - 3개월: 180,000
+ - 6개월: 340,000`
+    },
+    {
+        id: 3,
+        name: '팀터틀랫 유성봉명점',
+        region: '봉명',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 15,000
+기간권
+ - 1개월: 130,000
+ - 3개월: 200,000 (+1개월)
+ - 6개월: 270,000 (+1개월)
+PT 10회: 550,000 (+ 2개월권 충대제휴가)
+충대제휴(경상대/사회대/공대):
+ - 1개월: 120,000
+ - 3개월: 160,000
+ - 6개월: 250,000`
+    },
+    {
+        id: 4,
+        name: '머스트핏 봉명점',
+        region: '봉명',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 150,000
+기간권
+ - 1개월: 110,000
+ - 3개월: 239,000 (+1개월 / 블프 행사)
+ - 6개월: 339,000
+PT 10회: 500,000 (회당 50,000)
+* 1개월권(110,000) + 100,000 추가 시 PT 5회 이벤트
+충대제휴 (n+n)
+ - 1개월+1개월: 122,000
+ - 2개월+2개월: 178,000
+ - 4개월+4개월: 339,000`
+    },
+    {
+        id: 5,
+        name: '스포원 휘트니스',
+        region: '서문',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 현금 15,000 / 카드 20,000
+기간권
+ - 1개월: 없음(X)
+ - 3개월: 160,000
+ - 6개월: 250,000
+PT 10회: 400,000
+충대제휴: 없음
+* 리모델링 중 / 추후 가격 변동 예정`
+    },
+    {
+        id: 6,
+        name: '파프리카짐 죽동점',
+        region: '죽동',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 10,000
+기간권
+ - 1개월: 100,000
+ - 4개월: 230,000
+ - 12개월: 420,000
+PT 10회: 400,000 (회당 40,000)
+충대제휴(학생용 PT):
+ - PT 10회 + 2개월 서비스: 550,000`
+    },
+    {
+        id: 7,
+        name: 'JP 트레이닝 센터',
+        region: '죽동',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 20,000
+기간권
+ - 1개월: 90,000 (고정)
+PT 10회: 600,000
+ - 10회 이상 추가시 할인
+충대제휴(학생):
+ - PT 10회 500,000 + 1회 무료`
+    },
+    {
+        id: 8,
+        name: '마음다짐',
+        region: '죽동',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 25,000
+기간권
+ - 월 단위 없음
+ - 3개월: 165,000
+PT 10회: 600,000
+충대제휴: 없음
+* PT 기간 동안 회원권+락커 무료
+* PT 종료 후 복습용 3개월 무료 제공`
+    },
+    {
+        id: 9,
+        name: '플랜에이 피트니스',
+        region: '쪽문',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 16,000
+기간권
+ - 1개월: 110,000
+ - 3개월: 198,000
+ - 6개월: 330,000
+PT 10회: 660,000
+충대제휴: 없음`
+    },
+    {
+        id: 10,
+        name: 'DS 휘트니스 센터',
+        region: '쪽문',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 20,000
+기간권
+ - 1개월: 80,000
+ - 4개월: 200,000
+ - 7개월: 300,000
+PT 10회: 없음
+충대제휴: 없음`
+    },
+    {
+        id: 11,
+        name: '더 바디짐',
+        region: '쪽문',
+        type: '헬스장',
+        pricePublic: true,
+        price: `
+일일권: 10,000
+기간권
+ - 1개월: 50,000
+ - 3개월: 99,000
+ - 6개월: 180,000
+PT 10회: 200,000
+충대제휴: 없음`
+    }
+];
+
 
     const GOAL = 150;
 
@@ -411,4 +580,5 @@
     init();
 </script>
 </body>
+
 </html>
